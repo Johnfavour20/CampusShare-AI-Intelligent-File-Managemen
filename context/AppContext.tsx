@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import type { Page, User, FileItem, Activity, Notification } from '../types';
+import type { Page, User, FileItem, Activity, Notification, AdminView } from '../types';
 import { files as initialFiles, activities as initialActivities, notifications as initialNotifications } from '../constants';
 
 type DashboardView = 'materials' | 'collaborations' | 'activity';
@@ -39,6 +39,10 @@ interface AppContextType {
   // Dashboard Navigation
   dashboardView: DashboardView;
   setDashboardView: (view: DashboardView) => void;
+
+  // Admin Dashboard Navigation
+  adminView: AdminView;
+  setAdminView: (view: AdminView) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -64,6 +68,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   // Dashboard Navigation State
   const [dashboardView, setDashboardView] = useState<DashboardView>('materials');
+  const [adminView, setAdminView] = useState<AdminView>('stats');
+
 
   // Theme State
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -108,6 +114,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setIsAuthenticated(false);
     setPage('landing');
     setDashboardView('materials');
+    setAdminView('stats');
   };
   
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
@@ -249,7 +256,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         startFileUploadAnalysis, finalizeUpload, cancelAnalysis,
         isSearching, aiSearchResponse, searchResults, performAISearch, clearSearch,
         theme, toggleTheme,
-        dashboardView, setDashboardView
+        dashboardView, setDashboardView,
+        adminView, setAdminView
     }}>
       {children}
     </AppContext.Provider>

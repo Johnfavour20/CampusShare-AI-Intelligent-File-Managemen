@@ -6,9 +6,12 @@ import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 const Header: React.FC = () => {
     const { user, logout, notifications, markNotificationsAsRead, theme, toggleTheme, dashboardView, setDashboardView } = useAppContext();
     const [showNotifications, setShowNotifications] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const notificationsRef = useRef<HTMLDivElement>(null);
+    const profileRef = useRef<HTMLDivElement>(null);
 
     useOnClickOutside(notificationsRef, () => setShowNotifications(false));
+    useOnClickOutside(profileRef, () => setIsProfileOpen(false));
     
     const handleNotificationsToggle = () => {
         setShowNotifications(!showNotifications);
@@ -37,7 +40,7 @@ const Header: React.FC = () => {
                              {user?.role === 'admin' && <span className="px-2 py-1 bg-red-500/10 text-red-500 text-xs rounded-full font-semibold">Admin</span>}
                         </div>
                         {user?.role !== 'admin' && (
-                             <div className="hidden md:flex items-center space-x-1">
+                             <div className="hidden lg:flex items-center space-x-1">
                                 <button onClick={() => setDashboardView('materials')} className={navButtonClasses('materials')}>Course Folders</button>
                                 <button onClick={() => setDashboardView('collaborations')} className={navButtonClasses('collaborations')}>Collaborations</button>
                                 <button onClick={() => setDashboardView('activity')} className={navButtonClasses('activity')}>Activity Feed</button>
@@ -78,13 +81,24 @@ const Header: React.FC = () => {
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold">
-                                {user?.initials}
-                            </div>
-                            <button onClick={logout} className="hidden sm:block text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition" aria-label="Logout">
-                                <LogOut className="w-5 h-5" />
+                        <div className="relative" ref={profileRef}>
+                            <button onClick={() => setIsProfileOpen(p => !p)} className="flex items-center space-x-3 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 p-1 transition">
+                                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold">
+                                    {user?.initials}
+                                </div>
                             </button>
+                            {isProfileOpen && (
+                                <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-slate-800 border border-slate-200 dark:border-blue-500/20 rounded-xl shadow-xl z-50 p-2">
+                                    <div className="p-2 border-b border-slate-200 dark:border-blue-500/20 mb-2">
+                                        <p className="font-semibold text-slate-800 dark:text-white truncate">{user?.name}</p>
+                                        <p className="text-sm text-slate-500 dark:text-gray-400 truncate">{user?.email}</p>
+                                    </div>
+                                    <button onClick={logout} className="w-full flex items-center space-x-3 px-3 py-2 text-left text-slate-600 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-slate-700/50 rounded-lg transition">
+                                        <LogOut className="w-5 h-5" />
+                                        <span>Logout</span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

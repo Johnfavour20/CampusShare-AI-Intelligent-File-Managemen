@@ -58,8 +58,8 @@ const LandingPage: React.FC = () => {
             <div className="absolute inset-0 bg-white/50 dark:bg-slate-900/80"></div>
         </div>
         <div className="relative max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">Empowering Learning, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">Together</span></h1>
-          <p className="text-xl text-slate-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">Seamlessly share course materials, assignments, and research in a secure, unified platform built for your university.</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">Empowering Learning, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-cyan-500">Together</span></h1>
+          <p className="text-lg sm:text-xl text-slate-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">Seamlessly share course materials, assignments, and research in a secure, unified platform built for your university.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={() => setPage('auth')} className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-cyan-700 transition flex items-center justify-center space-x-2"><span>Get Started</span><ChevronRight className="w-5 h-5" /></button>
             <a href="#features" className="px-8 py-4 bg-slate-900/10 dark:bg-white/10 backdrop-blur text-slate-800 dark:text-white rounded-lg font-semibold hover:bg-slate-900/20 dark:hover:bg-white/20 transition border border-slate-900/20 dark:border-white/20">Explore Features</a>

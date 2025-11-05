@@ -7,6 +7,7 @@ import FilesSection from './dashboard/FilesSection';
 import ActivityLog from './dashboard/ActivityLog';
 import CollaborationsSection from './dashboard/CollaborationsSection';
 import { useAppContext } from '../context/AppContext';
+import MobileBottomNav from './dashboard/MobileBottomNav';
 
 const MyMaterialsView = () => (
     <>
@@ -41,10 +42,11 @@ const DashboardPage: React.FC = () => {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto pb-20 lg:pb-6">
             {renderContent()}
         </main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 };

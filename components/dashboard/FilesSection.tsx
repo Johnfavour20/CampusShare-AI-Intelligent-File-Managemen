@@ -159,9 +159,9 @@ const FilesSection: React.FC = () => {
 
     return (
         <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-blue-500/20 rounded-xl p-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h3 className="text-xl font-semibold text-slate-900 dark:text-white">Course Folders</h3>
-                <form onSubmit={handleSearch} className="flex-1 min-w-[250px] max-w-lg">
+                <form onSubmit={handleSearch} className="w-full sm:flex-1 sm:min-w-[250px] sm:max-w-lg">
                     <div className="relative">
                         <Sparkles className="w-5 h-5 text-blue-500 dark:text-blue-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                         <input

@@ -1,6 +1,7 @@
 import { LucideIcon } from 'lucide-react';
 
 export type Page = 'landing' | 'auth' | 'dashboard';
+export type AdminView = 'stats' | 'users';
 
 export interface User {
   name: string;
