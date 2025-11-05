@@ -1,55 +1,51 @@
 import React, { useState } from 'react';
 import { BookOpen, Eye, EyeOff } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
-import { allUsers } from '../constants';
 
 const AuthPage: React.FC = () => {
-  const { setPage, login } = useAppContext();
+  const { setPage, login, register } = useAppContext();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Add state for form fields
+  // Form fields state
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<'student' | 'faculty' | 'staff'>('student');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isAdminLogin) {
-      login({
-        name: 'Admin User',
-        email: 'admin@university.edu.ng',
-        role: 'admin',
-      });
-      return;
-    }
+    setError(null); // Clear previous errors
+
+    let result: { success: boolean; message?: string };
 
     if (isLogin) {
-      // Simulate login: find user by email from our mock data
-      const existingUser = allUsers.find(u => u.email === email);
-      if (existingUser) {
-        login({
-          name: existingUser.name,
-          email: existingUser.email,
-          role: existingUser.role,
-        });
-      } else {
-        // Fallback for demo purposes if email not found
-        login({
-          name: 'Grace Hopper',
-          email: 'grace@university.edu.ng',
-          role: 'student'
-        });
-      }
+      result = login({ email, isAdminLogin });
     } else {
-      // Registration: create a new user with form data
-      login({
+      // Registration
+      if (!fullName.trim()) {
+        setError("Full name is required.");
+        return;
+      }
+      result = register({
         name: fullName,
-        email: email,
-        role: role,
+        email,
+        role,
       });
     }
+
+    if (!result.success) {
+      setError(result.message || 'An unexpected error occurred.');
+    }
+  }
+
+  const handleSwitchMode = () => {
+      setIsLogin(!isLogin);
+      setError(null);
+      // Optional: clear fields on switch
+      // setEmail('');
+      // setFullName('');
   }
 
   return (
@@ -70,6 +66,11 @@ const AuthPage: React.FC = () => {
         </div>
 
         <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur border border-slate-300/50 dark:border-blue-500/20 rounded-2xl p-8">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4 text-sm text-center">
+                <p>{error}</p>
+            </div>
+          )}
           <form className="space-y-6" onSubmit={handleSubmit}>
             {!isLogin && (
               <div>
@@ -162,7 +163,7 @@ const AuthPage: React.FC = () => {
               {isLogin ? "Don't have an account? " : "Already have an account? "}
             </span>
             <button
-              onClick={() => setIsLogin(!isLogin)}
+              onClick={handleSwitchMode}
               className="text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 font-semibold"
             >
               {isLogin ? 'Sign up' : 'Sign in'}

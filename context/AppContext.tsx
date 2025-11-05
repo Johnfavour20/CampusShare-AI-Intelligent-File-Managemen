@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import type { Page, User, FileItem, Activity, Notification, AdminView } from '../types';
-import { files as initialFiles, activities as initialActivities, notifications as initialNotifications } from '../constants';
+import { files as initialFiles, activities as initialActivities, notifications as initialNotifications, allUsers } from '../constants';
 
 type DashboardView = 'materials' | 'collaborations' | 'activity' | 'settings';
 
@@ -9,7 +9,8 @@ interface AppContextType {
   setPage: (page: Page) => void;
   isAuthenticated: boolean;
   user: User | null;
-  login: (userData: Omit<User, 'initials'>) => void;
+  register: (userData: Omit<User, 'initials' | 'lastActive'>) => { success: boolean; message?: string };
+  login: (credentials: { email: string; isAdminLogin: boolean }) => { success: boolean; message?: string };
   logout: () => void;
   files: FileItem[];
   deleteFile: (fileId: number) => void;
@@ -60,6 +61,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [files, setFiles] = useState<FileItem[]>(initialFiles);
   const [activities, setActivities] = useState<Activity[]>(initialActivities);
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
+  
+  // User Management State (simulates a user database)
+  const [users, setUsers] = useState<User[]>(allUsers);
 
   // AI File Analysis State
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -118,15 +122,48 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return name.substring(0, 2).toUpperCase();
   }
 
-  const login = (userData: Omit<User, 'initials'>) => {
-    const fullUser: User = {
-      ...userData,
-      initials: getInitials(userData.name),
+  const register = (userData: Omit<User, 'initials' | 'lastActive'>): { success: boolean; message?: string } => {
+    if (users.some(u => u.email.toLowerCase() === userData.email.toLowerCase())) {
+        return { success: false, message: 'An account with this email already exists.' };
     }
-    setUser(fullUser);
+
+    const newUser: User = {
+        ...userData,
+        initials: getInitials(userData.name),
+        lastActive: 'Just now',
+    };
+
+    setUsers(prev => [...prev, newUser]);
+    setUser(newUser);
     setIsAuthenticated(true);
     setPage('dashboard');
+    return { success: true };
   };
+
+  const login = (credentials: { email: string; isAdminLogin: boolean }): { success: boolean; message?: string } => {
+    if (credentials.isAdminLogin) {
+        const adminUser = users.find(u => u.role === 'admin' && u.email === 'admin@university.edu.ng');
+        if (adminUser) {
+            setUser(adminUser);
+            setIsAuthenticated(true);
+            setPage('dashboard');
+            return { success: true };
+        }
+        return { success: false, message: 'Admin account not found.' };
+    }
+
+    const existingUser = users.find(u => u.email.toLowerCase() === credentials.email.toLowerCase());
+    
+    if (existingUser && existingUser.role !== 'admin') {
+      setUser(existingUser);
+      setIsAuthenticated(true);
+      setPage('dashboard');
+      return { success: true };
+    }
+
+    return { success: false, message: 'No account found with this email. Please register.' };
+  };
+
 
   const logout = () => {
     setUser(null);
@@ -268,7 +305,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   return (
     <AppContext.Provider value={{ 
         page, setPage, 
-        isAuthenticated, user, login, logout,
+        isAuthenticated, user, login, logout, register,
         files, deleteFile,
         activities,
         notifications, markNotificationsAsRead,
