@@ -10,7 +10,7 @@ interface AppContextType {
   isAuthenticated: boolean;
   user: User | null;
   register: (userData: Omit<User, 'initials' | 'lastActive'>) => { success: boolean; message?: string };
-  login: (credentials: { email: string; isAdminLogin: boolean }) => { success: boolean; message?: string };
+  login: (credentials: { email: string }) => { success: boolean; message?: string };
   logout: () => void;
   files: FileItem[];
   deleteFile: (fileId: number) => void;
@@ -137,6 +137,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         return { success: false, message: 'An account with this email already exists.' };
     }
 
+    if (userData.email.toLowerCase() === 'admin@university.edu.ng') {
+        return { success: false, message: 'This email is reserved.' };
+    }
+
     const newUser: User = {
         ...userData,
         initials: getInitials(userData.name),
@@ -150,8 +154,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return { success: true };
   };
 
-  const login = (credentials: { email: string; isAdminLogin: boolean }): { success: boolean; message?: string } => {
-    if (credentials.isAdminLogin) {
+  const login = (credentials: { email: string }): { success: boolean; message?: string } => {
+    const formattedEmail = credentials.email.toLowerCase();
+
+    if (formattedEmail === 'admin@university.edu.ng') {
         const adminUser = users.find(u => u.role === 'admin' && u.email === 'admin@university.edu.ng');
         if (adminUser) {
             setUser(adminUser);
@@ -162,7 +168,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         return { success: false, message: 'Admin account not found.' };
     }
 
-    const existingUser = users.find(u => u.email.toLowerCase() === credentials.email.toLowerCase());
+    const existingUser = users.find(u => u.email.toLowerCase() === formattedEmail);
     
     if (existingUser && existingUser.role !== 'admin') {
       setUser(existingUser);

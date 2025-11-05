@@ -6,7 +6,6 @@ const AuthPage: React.FC = () => {
   const { setPage, login, register } = useAppContext();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [isAdminLogin, setIsAdminLogin] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Form fields state
@@ -21,7 +20,7 @@ const AuthPage: React.FC = () => {
     let result: { success: boolean; message?: string };
 
     if (isLogin) {
-      result = login({ email, isAdminLogin });
+      result = login({ email });
     } else {
       // Registration
       if (!fullName.trim()) {
@@ -141,13 +140,6 @@ const AuthPage: React.FC = () => {
                 </label>
                 <a href="#" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300">Forgot password?</a>
               </div>
-            )}
-            
-            {isLogin && (
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" checked={isAdminLogin} onChange={(e) => setIsAdminLogin(e.target.checked)} className="rounded border-slate-400/50 dark:border-blue-500/20 bg-white/30 dark:bg-slate-900/50 text-blue-500 focus:ring-blue-500" />
-                  <span className="text-sm text-slate-700 dark:text-gray-400">Log in as Admin</span>
-                </label>
             )}
 
             <button
