@@ -14,6 +14,7 @@ interface AppContextType {
   logout: () => void;
   files: FileItem[];
   deleteFile: (fileId: number) => void;
+  downloadFile: (file: FileItem) => void;
   activities: Activity[];
   notifications: Notification[];
   markNotificationsAsRead: () => void;
@@ -32,6 +33,12 @@ interface AppContextType {
   searchResults: FileItem[] | null;
   performAISearch: (query: string) => void;
   clearSearch: () => void;
+  
+  // Share File Flow
+  fileToShare: FileItem | null;
+  startShareFile: (file: FileItem) => void;
+  cancelShareFile: () => void;
+  confirmShareFile: (fileId: number, email: string) => void;
 
   // Theme
   theme: 'light' | 'dark';
@@ -74,6 +81,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isSearching, setIsSearching] = useState(false);
   const [aiSearchResponse, setAiSearchResponse] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<FileItem[] | null>(null);
+  
+  // Share File State
+  const [fileToShare, setFileToShare] = useState<FileItem | null>(null);
 
   // Navigation State
   const [dashboardView, _setDashboardView] = useState<DashboardView>('materials');
@@ -266,6 +276,63 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setFiles(prev => prev.filter(f => f.id !== fileId));
     setActivities(prev => [newActivity, ...prev]);
   }
+  
+  const downloadFile = (file: FileItem) => {
+    const content = `This is a dummy file representing "${file.name}".\n\nSummary:\n${file.summary || 'N/A'}`;
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name.replace(/\.[^/.]+$/, "") + ".txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    const newActivity: Activity = {
+        action: 'File downloaded',
+        file: file.name,
+        user: 'You',
+        time: 'Just now',
+        type: 'download',
+    };
+    setActivities(prev => [newActivity, ...prev]);
+  };
+  
+  const startShareFile = (file: FileItem) => {
+    setFileToShare(file);
+  };
+
+  const cancelShareFile = () => {
+      setFileToShare(null);
+  };
+
+  const confirmShareFile = (fileId: number, email: string) => {
+      setFiles(prevFiles => prevFiles.map(f => 
+          f.id === fileId ? { ...f, shared: f.shared + 1 } : f
+      ));
+
+      const sharedFile = files.find(f => f.id === fileId);
+      if (sharedFile) {
+          const newActivity: Activity = {
+              action: `File shared with ${email}`,
+              file: sharedFile.name,
+              user: 'You',
+              time: 'Just now',
+              type: 'share',
+          };
+          setActivities(prev => [newActivity, ...prev]);
+
+          const newNotification: Notification = {
+              id: Date.now(),
+              message: `You shared "${sharedFile.name}" with ${email}.`,
+              time: 'Just now',
+              read: false,
+          };
+          setNotifications(prev => [newNotification, ...prev]);
+      }
+      setFileToShare(null);
+  };
 
   const markNotificationsAsRead = () => {
     setNotifications(prev => prev.map(n => ({...n, read: true})));
@@ -306,12 +373,13 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     <AppContext.Provider value={{ 
         page, setPage, 
         isAuthenticated, user, login, logout, register,
-        files, deleteFile,
+        files, deleteFile, downloadFile,
         activities,
         notifications, markNotificationsAsRead,
         isAnalyzing, analysisResult, fileForAnalysis,
         startFileUploadAnalysis, finalizeUpload, cancelAnalysis,
         isSearching, aiSearchResponse, searchResults, performAISearch, clearSearch,
+        fileToShare, startShareFile, cancelShareFile, confirmShareFile,
         theme, toggleTheme,
         dashboardView, setDashboardView,
         adminView, setAdminView,

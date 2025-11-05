@@ -5,6 +5,7 @@ import SystemStats from './SystemStats';
 import UserManagement from './UserManagement';
 import SettingsPage from '../dashboard/SettingsPage';
 import { useAppContext } from '../../context/AppContext';
+import MobileBottomNav from '../dashboard/MobileBottomNav';
 
 const AdminDashboardPage: React.FC = () => {
   const { adminView, isMobileMenuOpen, closeMobileMenu } = useAppContext();
@@ -33,10 +34,11 @@ const AdminDashboardPage: React.FC = () => {
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 pb-20 lg:pb-6 overflow-y-auto">
           {renderContent()}
         </main>
       </div>
+      <MobileBottomNav />
     </div>
   );
 };

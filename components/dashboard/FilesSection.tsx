@@ -2,6 +2,7 @@ import React, { useState, useRef, FormEvent } from 'react';
 import { useAppContext } from '../../context/AppContext';
 import { Sparkles, Loader, Lock, FileText, Users, Download, Share2, MoreVertical, Trash2, Info, X } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
+import type { FileItem } from '../../types';
 
 const FileOptions: React.FC<{ fileId: number, close: () => void }> = ({ fileId, close }) => {
     const { deleteFile } = useAppContext();
@@ -26,7 +27,8 @@ const FileOptions: React.FC<{ fileId: number, close: () => void }> = ({ fileId, 
     );
 };
 
-const FileItemCard: React.FC<{ file: any, onMenuToggle: (id: number) => void, isMenuOpen: boolean }> = ({ file, onMenuToggle, isMenuOpen }) => {
+const FileItemCard: React.FC<{ file: FileItem, onMenuToggle: (id: number) => void, isMenuOpen: boolean }> = ({ file, onMenuToggle, isMenuOpen }) => {
+    const { downloadFile, startShareFile } = useAppContext();
     return (
          <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-blue-500/20 rounded-lg p-3 sm:p-4 hover:border-slate-300 dark:hover:border-blue-500/40 transition">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -70,10 +72,10 @@ const FileItemCard: React.FC<{ file: any, onMenuToggle: (id: number) => void, is
                     </div>
                 </div>
                 <div className="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
-                    <button className="p-2 text-slate-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition" aria-label={`Download ${file.name}`}>
+                    <button onClick={() => downloadFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition" aria-label={`Download ${file.name}`}>
                         <Download className="w-5 h-5" />
                     </button>
-                    <button className="p-2 text-slate-500 dark:text-gray-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition" aria-label={`Share ${file.name}`}>
+                    <button onClick={() => startShareFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition" aria-label={`Share ${file.name}`}>
                         <Share2 className="w-5 h-5" />
                     </button>
                     <div className="relative">
@@ -139,7 +141,7 @@ const FilesSection: React.FC = () => {
                     </div>
                     {searchResults.length > 0 && <h4 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Relevant Documents</h4>}
                     <div className="space-y-3">
-                         {searchResults.map(file => (
+                         {searchResults.map((file: FileItem) => (
                            <FileItemCard key={file.id} file={file} onMenuToggle={handleMenuToggle} isMenuOpen={openMenuId === file.id} />
                         ))}
                     </div>
@@ -150,7 +152,7 @@ const FilesSection: React.FC = () => {
         // Default view
         return (
             <div className="space-y-3">
-                {files.map(file => (
+                {files.map((file: FileItem) => (
                     <FileItemCard key={file.id} file={file} onMenuToggle={handleMenuToggle} isMenuOpen={openMenuId === file.id} />
                 ))}
             </div>
