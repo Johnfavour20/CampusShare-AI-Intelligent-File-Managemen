@@ -21,6 +21,18 @@ const LandingPage: React.FC = () => {
       { icon: Shield, title: 'Assignment Tracking', desc: 'See when students submit work and easily manage different versions of assignments.' },
   ];
 
+  const handleScrollTo = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleMobileScrollTo = (id: string) => {
+    handleScrollTo(id);
+    setIsMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-white">
       {/* Navigation */}
@@ -32,9 +44,9 @@ const LandingPage: React.FC = () => {
               <span className="text-xl font-bold text-slate-900 dark:text-white">CampusShare</span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#departments" className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">Departments</a>
-              <a href="#features" className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">Features</a>
-              <a href="#about" className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">About</a>
+              <button onClick={() => handleScrollTo('departments')} className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">Departments</button>
+              <button onClick={() => handleScrollTo('features')} className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">Features</button>
+              <button onClick={() => handleScrollTo('about')} className="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition">About</button>
               <button onClick={() => setPage('auth')} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-semibold">Login / Register</button>
             </div>
             <button className="md:hidden text-slate-800 dark:text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>{isMenuOpen ? <X /> : <Menu />}</button>
@@ -43,9 +55,9 @@ const LandingPage: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
             <div className="px-4 py-4 space-y-3">
-              <a href="#departments" onClick={() => setIsMenuOpen(false)} className="block text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">Departments</a>
-              <a href="#features" onClick={() => setIsMenuOpen(false)} className="block text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">Features</a>
-              <a href="#about" onClick={() => setIsMenuOpen(false)} className="block text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">About</a>
+              <button onClick={() => handleMobileScrollTo('departments')} className="block text-left w-full text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">Departments</button>
+              <button onClick={() => handleMobileScrollTo('features')} className="block text-left w-full text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">Features</button>
+              <button onClick={() => handleMobileScrollTo('about')} className="block text-left w-full text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white">About</button>
               <button onClick={() => setPage('auth')} className="w-full px-6 py-2 bg-blue-600 text-white rounded-lg">Login / Register</button>
             </div>
           </div>
@@ -62,7 +74,7 @@ const LandingPage: React.FC = () => {
           <p className="text-lg sm:text-xl text-slate-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto">Seamlessly share course materials, assignments, and research in a secure, unified platform built for your university.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={() => setPage('auth')} className="px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-cyan-700 transition flex items-center justify-center space-x-2"><span>Get Started</span><ChevronRight className="w-5 h-5" /></button>
-            <a href="#features" className="px-8 py-4 bg-slate-900/10 dark:bg-white/10 backdrop-blur text-slate-800 dark:text-white rounded-lg font-semibold hover:bg-slate-900/20 dark:hover:bg-white/20 transition border border-slate-900/20 dark:border-white/20">Explore Features</a>
+            <button onClick={() => handleScrollTo('features')} className="px-8 py-4 bg-slate-900/10 dark:bg-white/10 backdrop-blur text-slate-800 dark:text-white rounded-lg font-semibold hover:bg-slate-900/20 dark:hover:bg-white/20 transition border border-slate-900/20 dark:border-white/20">Explore Features</button>
           </div>
         </div>
       </main>
