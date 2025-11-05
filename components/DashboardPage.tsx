@@ -7,7 +7,6 @@ import FilesSection from './dashboard/FilesSection';
 import ActivityLog from './dashboard/ActivityLog';
 import CollaborationsSection from './dashboard/CollaborationsSection';
 import { useAppContext } from '../context/AppContext';
-import MobileBottomNav from './dashboard/MobileBottomNav';
 
 const MyMaterialsView = () => (
     <>
@@ -22,7 +21,7 @@ const MyMaterialsView = () => (
 );
 
 const DashboardPage: React.FC = () => {
-  const { dashboardView } = useAppContext();
+  const { dashboardView, isMobileMenuOpen, closeMobileMenu } = useAppContext();
 
   const renderContent = () => {
     switch (dashboardView) {
@@ -38,15 +37,21 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen text-slate-800 dark:text-white flex">
+    <div className="min-h-screen text-slate-800 dark:text-white flex bg-slate-50 dark:bg-slate-900">
+      {isMobileMenuOpen && (
+          <div 
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              onClick={closeMobileMenu}
+              aria-hidden="true"
+          ></div>
+      )}
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <main className="flex-1 p-6 overflow-y-auto pb-20 lg:pb-6">
+        <main className="flex-1 p-6 overflow-y-auto">
             {renderContent()}
         </main>
       </div>
-      <MobileBottomNav />
     </div>
   );
 };

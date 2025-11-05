@@ -33,7 +33,7 @@ const UploadSection: React.FC = () => {
                 onDragLeave={(e) => { e.preventDefault(); setIsDragOver(false); }}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center transition cursor-pointer ${isDragOver ? 'border-blue-500 bg-blue-500/10 dark:bg-slate-700/50' : 'border-slate-300 dark:border-blue-500/30 hover:border-blue-500/50'}`}
+                className={`border-2 border-dashed rounded-xl p-6 sm:p-8 flex flex-col items-center justify-center transition cursor-pointer ${isDragOver ? 'border-blue-500 bg-blue-500/10 dark:bg-slate-700/50' : 'border-slate-300 dark:border-blue-500/30 hover:border-blue-500/50'}`}
             >
                 <input type="file" className="hidden" onChange={handleFileChange} />
                 <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4">

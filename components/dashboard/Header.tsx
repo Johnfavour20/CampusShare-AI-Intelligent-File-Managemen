@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { Bell, LogOut, BookOpen, Sun, Moon } from 'lucide-react';
+import { Bell, LogOut, BookOpen, Sun, Moon, Menu } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 
 const Header: React.FC = () => {
-    const { user, logout, notifications, markNotificationsAsRead, theme, toggleTheme, dashboardView, setDashboardView } = useAppContext();
+    const { user, logout, notifications, markNotificationsAsRead, theme, toggleTheme, dashboardView, setDashboardView, toggleMobileMenu } = useAppContext();
     const [showNotifications, setShowNotifications] = useState(false);
     const [isProfileOpen, setIsProfileOpen] = useState(false);
     const notificationsRef = useRef<HTMLDivElement>(null);
@@ -30,10 +30,17 @@ const Header: React.FC = () => {
         }`;
 
     return (
-        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-blue-500/20 sticky top-0 z-40">
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-blue-500/20 sticky top-0 z-30">
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
-                    <div className="flex items-center space-x-8">
+                    <div className="flex items-center space-x-2 sm:space-x-4">
+                         <button
+                            onClick={toggleMobileMenu}
+                            className="lg:hidden p-2 -ml-2 text-slate-500 dark:text-gray-400 hover:text-slate-800 dark:hover:text-white transition rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"
+                            aria-label="Open navigation menu"
+                        >
+                            <Menu className="w-6 h-6" />
+                        </button>
                         <div className="flex items-center space-x-2">
                             <BookOpen className="w-8 h-8 text-blue-500 dark:text-blue-400" />
                             <span className="text-xl font-bold text-slate-900 dark:text-white">CampusShare</span>

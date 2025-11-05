@@ -28,11 +28,11 @@ const FileOptions: React.FC<{ fileId: number, close: () => void }> = ({ fileId, 
 
 const FileItemCard: React.FC<{ file: any, onMenuToggle: (id: number) => void, isMenuOpen: boolean }> = ({ file, onMenuToggle, isMenuOpen }) => {
     return (
-         <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-blue-500/20 rounded-lg p-4 hover:border-slate-300 dark:hover:border-blue-500/40 transition">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between">
-                <div className="flex items-center space-x-4 flex-1 min-w-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <FileText className="w-6 h-6 text-white" />
+         <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-blue-500/20 rounded-lg p-3 sm:p-4 hover:border-slate-300 dark:hover:border-blue-500/40 transition">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex items-center space-x-3 sm:space-x-4 flex-1 min-w-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
                         <div className="flex items-center flex-wrap gap-2 mb-1">
@@ -55,7 +55,7 @@ const FileItemCard: React.FC<{ file: any, onMenuToggle: (id: number) => void, is
                                 </div>
                             )}
                         </div>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-gray-400">
+                        <div className="flex flex-wrap items-center gap-x-3 sm:gap-x-4 gap-y-1 text-sm text-slate-500 dark:text-gray-400">
                             <span>{file.size}</span>
                             <span className="hidden sm:inline">•</span>
                             <span>{file.uploaded}</span>
@@ -64,12 +64,12 @@ const FileItemCard: React.FC<{ file: any, onMenuToggle: (id: number) => void, is
                                 <span className="hidden sm:inline">•</span>
                             <span className="flex items-center space-x-1">
                                 <Users className="w-3 h-3" />
-                                <span>{file.shared} people</span>
+                                <span>{file.shared}</span>
                             </span>
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center space-x-2 mt-4 sm:mt-0 ml-auto sm:ml-4 flex-shrink-0">
+                <div className="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
                     <button className="p-2 text-slate-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition" aria-label={`Download ${file.name}`}>
                         <Download className="w-5 h-5" />
                     </button>

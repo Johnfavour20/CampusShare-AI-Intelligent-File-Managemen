@@ -43,6 +43,11 @@ interface AppContextType {
   // Admin Dashboard Navigation
   adminView: AdminView;
   setAdminView: (view: AdminView) => void;
+
+  // Mobile Menu
+  isMobileMenuOpen: boolean;
+  toggleMobileMenu: () => void;
+  closeMobileMenu: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -66,9 +71,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [aiSearchResponse, setAiSearchResponse] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<FileItem[] | null>(null);
 
-  // Dashboard Navigation State
-  const [dashboardView, setDashboardView] = useState<DashboardView>('materials');
-  const [adminView, setAdminView] = useState<AdminView>('stats');
+  // Navigation State
+  const [dashboardView, _setDashboardView] = useState<DashboardView>('materials');
+  const [adminView, _setAdminView] = useState<AdminView>('stats');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 
   // Theme State
@@ -89,6 +95,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
+  const toggleMobileMenu = () => setIsMobileMenuOpen(prev => !prev);
+
+  const setDashboardView = (view: DashboardView) => {
+    _setDashboardView(view);
+    closeMobileMenu();
+  };
+  
+  const setAdminView = (view: AdminView) => {
+    _setAdminView(view);
+    closeMobileMenu();
   };
 
   const getInitials = (name: string) => {
@@ -112,9 +131,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
+    closeMobileMenu();
     setPage('landing');
-    setDashboardView('materials');
-    setAdminView('stats');
+    _setDashboardView('materials');
+    _setAdminView('stats');
   };
   
   const formatDate = (date: Date) => date.toISOString().split('T')[0];
@@ -257,7 +277,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         isSearching, aiSearchResponse, searchResults, performAISearch, clearSearch,
         theme, toggleTheme,
         dashboardView, setDashboardView,
-        adminView, setAdminView
+        adminView, setAdminView,
+        isMobileMenuOpen, toggleMobileMenu, closeMobileMenu
     }}>
       {children}
     </AppContext.Provider>
