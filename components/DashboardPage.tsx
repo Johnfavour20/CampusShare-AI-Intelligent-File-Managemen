@@ -6,6 +6,7 @@ import UploadSection from './dashboard/UploadSection';
 import FilesSection from './dashboard/FilesSection';
 import ActivityLog from './dashboard/ActivityLog';
 import CollaborationsSection from './dashboard/CollaborationsSection';
+import SettingsPage from './dashboard/SettingsPage';
 import { useAppContext } from '../context/AppContext';
 
 const MyMaterialsView = () => (
@@ -31,6 +32,8 @@ const DashboardPage: React.FC = () => {
             return <CollaborationsSection />;
         case 'activity':
             return <ActivityLog />;
+        case 'settings':
+            return <SettingsPage />;
         default:
             return <MyMaterialsView />;
     }

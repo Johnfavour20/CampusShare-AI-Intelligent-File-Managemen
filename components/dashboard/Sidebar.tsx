@@ -46,7 +46,7 @@ const Sidebar: React.FC = () => {
             <Activity className="w-5 h-5" />
             <span>Activity Feed</span>
           </button>
-          <button className="w-full px-4 py-3 text-slate-500 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-800 dark:hover:text-white rounded-lg flex items-center space-x-3 transition">
+          <button onClick={() => setDashboardView('settings')} className={navButtonClasses('settings')}>
             <Settings className="w-5 h-5" />
             <span>Settings</span>
           </button>

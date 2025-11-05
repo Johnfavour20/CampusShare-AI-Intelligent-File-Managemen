@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import { BookOpen, Eye, EyeOff } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
+import { allUsers } from '../constants';
 
 const AuthPage: React.FC = () => {
   const { setPage, login } = useAppContext();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isAdminLogin, setIsAdminLogin] = useState(false);
+
+  // Add state for form fields
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [role, setRole] = useState<'student' | 'faculty' | 'staff'>('student');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,11 +22,32 @@ const AuthPage: React.FC = () => {
         email: 'admin@university.edu.ng',
         role: 'admin',
       });
+      return;
+    }
+
+    if (isLogin) {
+      // Simulate login: find user by email from our mock data
+      const existingUser = allUsers.find(u => u.email === email);
+      if (existingUser) {
+        login({
+          name: existingUser.name,
+          email: existingUser.email,
+          role: existingUser.role,
+        });
+      } else {
+        // Fallback for demo purposes if email not found
+        login({
+          name: 'Grace Hopper',
+          email: 'grace@university.edu.ng',
+          role: 'student'
+        });
+      }
     } else {
+      // Registration: create a new user with form data
       login({
-        name: 'Grace Hopper',
-        email: 'grace@university.edu.ng',
-        role: 'student'
+        name: fullName,
+        email: email,
+        role: role,
       });
     }
   }
@@ -50,6 +77,8 @@ const AuthPage: React.FC = () => {
                 <input
                   type="text"
                   required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-4 py-3 bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-blue-500/20 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition"
                   placeholder="Enter your full name"
                 />
@@ -61,6 +90,8 @@ const AuthPage: React.FC = () => {
               <input
                 type="email"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-blue-500/20 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition"
                 placeholder="you@university.edu.ng"
               />
@@ -89,10 +120,14 @@ const AuthPage: React.FC = () => {
             {!isLogin && (
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-gray-300 mb-2">Role</label>
-                <select className="w-full px-4 py-3 bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-blue-500/20 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition">
-                  <option>Student</option>
-                  <option>Faculty</option>
-                  <option>Staff</option>
+                <select 
+                    value={role}
+                    onChange={(e) => setRole(e.target.value as 'student' | 'faculty' | 'staff')}
+                    className="w-full px-4 py-3 bg-white/50 dark:bg-slate-900/50 border border-slate-300 dark:border-blue-500/20 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition"
+                >
+                  <option value="student">Student</option>
+                  <option value="faculty">Faculty</option>
+                  <option value="staff">Staff</option>
                 </select>
               </div>
             )}

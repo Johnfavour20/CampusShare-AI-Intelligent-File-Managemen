@@ -2,7 +2,7 @@ import React, { createContext, useState, useContext, ReactNode, useEffect } from
 import type { Page, User, FileItem, Activity, Notification, AdminView } from '../types';
 import { files as initialFiles, activities as initialActivities, notifications as initialNotifications } from '../constants';
 
-type DashboardView = 'materials' | 'collaborations' | 'activity';
+type DashboardView = 'materials' | 'collaborations' | 'activity' | 'settings';
 
 interface AppContextType {
   page: Page;

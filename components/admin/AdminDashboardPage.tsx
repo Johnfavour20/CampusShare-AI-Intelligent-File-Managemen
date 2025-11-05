@@ -3,6 +3,7 @@ import AdminSidebar from './AdminSidebar';
 import Header from '../dashboard/Header';
 import SystemStats from './SystemStats';
 import UserManagement from './UserManagement';
+import SettingsPage from '../dashboard/SettingsPage';
 import { useAppContext } from '../../context/AppContext';
 
 const AdminDashboardPage: React.FC = () => {
@@ -12,6 +13,8 @@ const AdminDashboardPage: React.FC = () => {
     switch (adminView) {
       case 'users':
         return <UserManagement />;
+      case 'settings':
+        return <SettingsPage />;
       case 'stats':
       default:
         return <SystemStats />;
