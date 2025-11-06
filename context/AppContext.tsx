@@ -318,8 +318,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const fileToUpdate = files.find(f => f.id === fileId);
       if (!fileToUpdate) return;
 
-      const recipientUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
       // Update the file's shared count and sharedWith list
       setFiles(prevFiles => prevFiles.map(f => 
           f.id === fileId 
@@ -353,17 +351,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       };
       notificationsToAdd.push(sharerNotification);
 
-      // Notification for the recipient, if they are a user on the platform
-      if (recipientUser) {
-          const recipientNotification: Notification = {
-              id: Date.now() + 1, // ensure unique key
-              message: `${user?.name} shared "${fileToUpdate.name}" with you.`,
-              time: 'Just now',
-              read: false,
-              recipient: recipientUser.email,
-          };
-          notificationsToAdd.push(recipientNotification);
-      }
+      // Notification for the recipient, regardless of whether they are a registered user yet.
+      // They will see this notification upon their next login or after signing up.
+      const recipientNotification: Notification = {
+          id: Date.now() + 1, // ensure unique key
+          message: `${user?.name} shared "${fileToUpdate.name}" with you.`,
+          time: 'Just now',
+          read: false,
+          recipient: email.toLowerCase(),
+      };
+      notificationsToAdd.push(recipientNotification);
       
       setNotifications(prev => [...notificationsToAdd, ...prev]);
   };
