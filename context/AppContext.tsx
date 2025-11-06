@@ -242,6 +242,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       summary: aiData?.summary,
       keywords: aiData?.keywords,
       category: aiData?.category,
+      sharedWith: [],
     };
     
     const newActivity: Activity = {
@@ -314,18 +315,26 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const confirmShareFile = (fileId: number, email: string) => {
-      const fileToShare = files.find(f => f.id === fileId);
-      if (!fileToShare) return;
+      const fileToUpdate = files.find(f => f.id === fileId);
+      if (!fileToUpdate) return;
 
       const recipientUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
 
+      // Update the file's shared count and sharedWith list
       setFiles(prevFiles => prevFiles.map(f => 
-          f.id === fileId ? { ...f, shared: f.shared + 1 } : f
+          f.id === fileId 
+          ? { 
+              ...f, 
+              shared: f.shared + 1,
+              sharedWith: [...(f.sharedWith || []), email.toLowerCase()]
+            } 
+          : f
       ));
 
+      // Create a new activity log entry
       const newActivity: Activity = {
           action: `File shared with ${email}`,
-          file: fileToShare.name,
+          file: fileToUpdate.name,
           user: 'You',
           time: 'Just now',
           type: 'share',
@@ -337,7 +346,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       // Notification for the person sharing
       const sharerNotification: Notification = {
           id: Date.now(),
-          message: `You shared "${fileToShare.name}" with ${email}.`,
+          message: `You shared "${fileToUpdate.name}" with ${email}.`,
           time: 'Just now',
           read: false,
           recipient: user?.email,
@@ -348,7 +357,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (recipientUser) {
           const recipientNotification: Notification = {
               id: Date.now() + 1, // ensure unique key
-              message: `${user?.name} shared "${fileToShare.name}" with you.`,
+              message: `${user?.name} shared "${fileToUpdate.name}" with you.`,
               time: 'Just now',
               read: false,
               recipient: recipientUser.email,
@@ -369,11 +378,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setIsSearching(true);
     setAiSearchResponse(null);
     setSearchResults(null);
+    
+    // First, get only the files visible to the current user
+    const userVisibleFiles = files.filter(file => file.owner === 'You' || file.sharedWith?.includes(user?.email ?? ''));
 
     // Mock Gemini API call for semantic search
     setTimeout(() => {
       const queryKeywords = query.toLowerCase().split(' ').filter(kw => kw.length > 2);
-      const foundFiles = files.filter(file => {
+      
+      // Search only within the user's visible files
+      const foundFiles = userVisibleFiles.filter(file => {
         const fileContent = `${file.summary?.toLowerCase()} ${file.keywords?.map(k => k.toLowerCase()).join(' ')} ${file.name.toLowerCase()}`;
         return queryKeywords.some(kw => fileContent.includes(kw));
       });

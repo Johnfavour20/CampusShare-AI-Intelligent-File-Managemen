@@ -96,7 +96,7 @@ const FileItemCard: React.FC<{ file: FileItem, onMenuToggle: (id: number) => voi
 
 
 const FilesSection: React.FC = () => {
-    const { files, isSearching, searchResults, aiSearchResponse, performAISearch, clearSearch } = useAppContext();
+    const { files, user, isSearching, searchResults, aiSearchResponse, performAISearch, clearSearch } = useAppContext();
     const [query, setQuery] = useState('');
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
@@ -149,12 +149,20 @@ const FilesSection: React.FC = () => {
             )
         }
         
-        // Default view
+        // Default view: Show files owned by the user OR shared with the user
+        const userFiles = files.filter(file => 
+            file.owner === 'You' || file.sharedWith?.includes(user?.email ?? '')
+        );
+
         return (
             <div className="space-y-3">
-                {files.map((file: FileItem) => (
+                {userFiles.length > 0 ? userFiles.map((file: FileItem) => (
                     <FileItemCard key={file.id} file={file} onMenuToggle={handleMenuToggle} isMenuOpen={openMenuId === file.id} />
-                ))}
+                )) : (
+                    <div className="text-center py-12">
+                        <p className="text-slate-500 dark:text-gray-400">You don't have any files yet. Try uploading one!</p>
+                    </div>
+                )}
             </div>
         )
     }

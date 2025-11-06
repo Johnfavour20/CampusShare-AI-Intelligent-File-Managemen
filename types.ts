@@ -22,6 +22,7 @@ export interface FileItem {
   summary?: string;
   keywords?: string[];
   category?: string;
+  sharedWith?: string[]; // To track who the file is shared with
 }
 
 export interface Activity {

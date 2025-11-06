@@ -12,7 +12,8 @@ export const files: FileItem[] = [
     status: 'encrypted',
     summary: 'A detailed assignment covering the OSI model, TCP/IP protocols, and subnetting. It requires students to analyze network packets and design a small office network.',
     keywords: ['Networking', 'OSI Model', 'TCP/IP', 'Subnetting'],
-    category: 'Assignment'
+    category: 'Assignment',
+    sharedWith: [],
   },
   { 
     id: 2, 
@@ -24,7 +25,8 @@ export const files: FileItem[] = [
     status: 'encrypted',
     summary: 'A draft exploring the ethical implications of bias in machine learning algorithms. It discusses fairness, accountability, and transparency in AI systems.',
     keywords: ['AI', 'Ethics', 'Machine Learning', 'Bias'],
-    category: 'Research Paper'
+    category: 'Research Paper',
+    sharedWith: [],
   },
   { 
     id: 3, 
@@ -36,7 +38,8 @@ export const files: FileItem[] = [
     status: 'encrypted',
     summary: 'Lecture slides on relational database design principles, focusing on normalization (1NF, 2NF, 3NF), and entity-relationship diagrams (ERDs).',
     keywords: ['Database', 'SQL', 'Normalization', 'ERD'],
-    category: 'Lecture Slides'
+    category: 'Lecture Slides',
+    sharedWith: [],
   },
   { 
     id: 4, 
@@ -48,7 +51,8 @@ export const files: FileItem[] = [
     status: 'encrypted',
     summary: 'Comprehensive documentation for the "CampusConnect" software project, outlining system architecture, API endpoints, and user flow diagrams.',
     keywords: ['Project', 'Software', 'Documentation', 'API'],
-    category: 'Documentation'
+    category: 'Documentation',
+    sharedWith: [],
   },
 ];
 
