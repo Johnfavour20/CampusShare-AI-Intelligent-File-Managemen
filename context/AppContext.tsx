@@ -40,6 +40,11 @@ interface AppContextType {
   cancelShareFile: () => void;
   confirmShareFile: (fileId: number, email: string) => void;
 
+  // View File Flow
+  fileToView: FileItem | null;
+  startViewFile: (file: FileItem) => void;
+  cancelViewFile: () => void;
+
   // Theme
   theme: 'light' | 'dark';
   toggleTheme: () => void;
@@ -84,6 +89,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   
   // Share File State
   const [fileToShare, setFileToShare] = useState<FileItem | null>(null);
+
+  // View File State
+  const [fileToView, setFileToView] = useState<FileItem | null>(null);
 
   // Navigation State
   const [dashboardView, _setDashboardView] = useState<DashboardView>('materials');
@@ -236,7 +244,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       name: aiData?.name || file.name,
       size: formatBytes(file.size),
       uploaded: formatDate(new Date()),
-      owner: 'You',
+      owner: user?.name ?? 'You',
       shared: 0,
       status: 'encrypted',
       summary: aiData?.summary,
@@ -365,6 +373,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       setNotifications(prev => [...notificationsToAdd, ...prev]);
   };
 
+  const startViewFile = (file: FileItem) => {
+    setFileToView(file);
+  };
+
+  const cancelViewFile = () => {
+    setFileToView(null);
+  };
+
   const markNotificationsAsRead = () => {
     setNotifications(prev => prev.map(n => 
         (!n.recipient || n.recipient === user?.email) ? { ...n, read: true } : n
@@ -418,6 +434,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         startFileUploadAnalysis, finalizeUpload, cancelAnalysis,
         isSearching, aiSearchResponse, searchResults, performAISearch, clearSearch,
         fileToShare, startShareFile, cancelShareFile, confirmShareFile,
+        fileToView, startViewFile, cancelViewFile,
         theme, toggleTheme,
         dashboardView, setDashboardView,
         adminView, setAdminView,

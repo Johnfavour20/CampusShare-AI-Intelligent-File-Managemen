@@ -6,9 +6,10 @@ import AdminDashboardPage from './components/admin/AdminDashboardPage';
 import { useAppContext } from './context/AppContext';
 import AIInsightsModal from './components/dashboard/AIInsightsModal';
 import ShareFileModal from './components/dashboard/ShareFileModal';
+import FileViewerModal from './components/dashboard/FileViewerModal';
 
 const App: React.FC = () => {
-  const { page, isAuthenticated, user, fileForAnalysis, fileToShare } = useAppContext();
+  const { page, isAuthenticated, user, fileForAnalysis, fileToShare, fileToView } = useAppContext();
 
   const renderPage = () => {
     if (isAuthenticated && user) {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
       {renderPage()}
       {fileForAnalysis && <AIInsightsModal />}
       {fileToShare && <ShareFileModal />}
+      {fileToView && <FileViewerModal />}
     </>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState, useRef, FormEvent } from 'react';
 import { useAppContext } from '../../context/AppContext';
-import { Sparkles, Loader, Lock, FileText, Users, Download, Share2, MoreVertical, Trash2, Info, X } from 'lucide-react';
+import { Sparkles, Loader, Lock, FileText, Users, Download, Share2, MoreVertical, Trash2, Info, X, Eye } from 'lucide-react';
 import { useOnClickOutside } from '../../hooks/useOnClickOutside';
 import type { FileItem } from '../../types';
 
@@ -28,7 +28,9 @@ const FileOptions: React.FC<{ fileId: number, close: () => void }> = ({ fileId, 
 };
 
 const FileItemCard: React.FC<{ file: FileItem, onMenuToggle: (id: number) => void, isMenuOpen: boolean }> = ({ file, onMenuToggle, isMenuOpen }) => {
-    const { downloadFile, startShareFile } = useAppContext();
+    const { user, downloadFile, startShareFile, startViewFile } = useAppContext();
+    const isOwner = file.owner === user?.name;
+
     return (
          <div className="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-blue-500/20 rounded-lg p-3 sm:p-4 hover:border-slate-300 dark:hover:border-blue-500/40 transition">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -62,7 +64,7 @@ const FileItemCard: React.FC<{ file: FileItem, onMenuToggle: (id: number) => voi
                             <span className="hidden sm:inline">•</span>
                             <span>{file.uploaded}</span>
                             <span className="hidden sm:inline">•</span>
-                            <span>By {file.owner}</span>
+                            <span>By {isOwner ? 'You' : file.owner}</span>
                                 <span className="hidden sm:inline">•</span>
                             <span className="flex items-center space-x-1">
                                 <Users className="w-3 h-3" />
@@ -72,22 +74,31 @@ const FileItemCard: React.FC<{ file: FileItem, onMenuToggle: (id: number) => voi
                     </div>
                 </div>
                 <div className="flex items-center space-x-2 self-end sm:self-center flex-shrink-0">
-                    <button onClick={() => downloadFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition" aria-label={`Download ${file.name}`}>
-                        <Download className="w-5 h-5" />
-                    </button>
-                    <button onClick={() => startShareFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition" aria-label={`Share ${file.name}`}>
-                        <Share2 className="w-5 h-5" />
-                    </button>
-                    <div className="relative">
-                        <button
-                            onClick={() => onMenuToggle(file.id)}
-                            className="p-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition"
-                            aria-label={`More options for ${file.name}`}
-                        >
-                            <MoreVertical className="w-5 h-5" />
+                    {isOwner ? (
+                        <>
+                            <button onClick={() => downloadFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition" aria-label={`Download ${file.name}`}>
+                                <Download className="w-5 h-5" />
+                            </button>
+                            <button onClick={() => startShareFile(file)} className="p-2 text-slate-500 dark:text-gray-400 hover:text-cyan-500 dark:hover:text-cyan-400 transition" aria-label={`Share ${file.name}`}>
+                                <Share2 className="w-5 h-5" />
+                            </button>
+                            <div className="relative">
+                                <button
+                                    onClick={() => onMenuToggle(file.id)}
+                                    className="p-2 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition"
+                                    aria-label={`More options for ${file.name}`}
+                                >
+                                    <MoreVertical className="w-5 h-5" />
+                                </button>
+                                {isMenuOpen && <FileOptions fileId={file.id} close={() => onMenuToggle(file.id)} />}
+                            </div>
+                        </>
+                    ) : (
+                        <button onClick={() => startViewFile(file)} className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center space-x-2 text-sm">
+                            <Eye className="w-4 h-4" />
+                            <span>View File</span>
                         </button>
-                        {isMenuOpen && <FileOptions fileId={file.id} close={() => onMenuToggle(file.id)} />}
-                    </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -151,7 +162,7 @@ const FilesSection: React.FC = () => {
         
         // Default view: Show files owned by the user OR shared with the user
         const userFiles = files.filter(file => 
-            file.owner === 'You' || file.sharedWith?.includes(user?.email ?? '')
+            file.owner === user?.name || file.sharedWith?.includes(user?.email ?? '')
         );
 
         return (
