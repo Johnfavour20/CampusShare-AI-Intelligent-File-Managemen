@@ -37,6 +37,7 @@ export interface Notification {
   message: string;
   time: string;
   read: boolean;
+  recipient?: string; // For user-specific notifications
 }
 
 export interface Workspace {

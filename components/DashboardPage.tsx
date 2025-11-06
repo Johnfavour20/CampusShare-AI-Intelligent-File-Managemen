@@ -23,7 +23,7 @@ const MyMaterialsView = () => (
 );
 
 const DashboardPage: React.FC = () => {
-  const { dashboardView, isMobileMenuOpen, closeMobileMenu } = useAppContext();
+  const { dashboardView, isMobileMenuOpen, closeMobileMenu, user } = useAppContext();
 
   const renderContent = () => {
     switch (dashboardView) {
@@ -53,6 +53,12 @@ const DashboardPage: React.FC = () => {
       <div className="flex-1 flex flex-col">
         <Header />
         <main className="flex-1 p-6 pb-20 lg:pb-6 overflow-y-auto">
+            {dashboardView === 'materials' && (
+              <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Welcome, dear {user?.name}!</h2>
+                  <p className="text-slate-500 dark:text-gray-400 mt-1">Here's what's happening on your CampusShare today.</p>
+              </div>
+            )}
             {renderContent()}
         </main>
       </div>

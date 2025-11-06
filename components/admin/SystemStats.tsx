@@ -1,8 +1,10 @@
 import React from 'react';
 import { Users, FileText, Database, GitBranch } from 'lucide-react';
 import WeeklyActivityChart from './WeeklyActivityChart';
+import { useAppContext } from '../../context/AppContext';
 
 const SystemStats: React.FC = () => {
+    const { user } = useAppContext();
     const stats = [
         {
             icon: Users,
@@ -41,8 +43,8 @@ const SystemStats: React.FC = () => {
     return (
         <div>
             <div className="mb-8">
-                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">System Statistics</h2>
-                <p className="text-slate-500 dark:text-gray-400 mt-1">High-level overview of the CampusShare platform.</p>
+                <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Welcome, Admin {user?.name}!</h2>
+                <p className="text-slate-500 dark:text-gray-400 mt-1">Here's your high-level overview of the CampusShare platform.</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((stat, index) => {

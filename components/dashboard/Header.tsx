@@ -19,8 +19,10 @@ const Header: React.FC = () => {
             markNotificationsAsRead();
         }
     }
-
-    const unreadCount = notifications.filter(n => !n.read).length;
+    
+    // Filter notifications for current user (or system-wide notifications with no recipient)
+    const userNotifications = notifications.filter(n => !n.recipient || n.recipient === user?.email);
+    const unreadCount = userNotifications.filter(n => !n.read).length;
 
     const navButtonClasses = (view: string) => 
         `px-4 py-2 rounded-lg text-sm font-medium transition ${
@@ -78,7 +80,7 @@ const Header: React.FC = () => {
                                         <h3 className="font-semibold text-slate-900 dark:text-white">Notifications</h3>
                                     </div>
                                     <div className="max-h-96 overflow-y-auto">
-                                        {notifications.length > 0 ? notifications.map(notif => (
+                                        {userNotifications.length > 0 ? userNotifications.map(notif => (
                                             <div key={notif.id} className={`p-4 border-b border-slate-100 dark:border-blue-500/10 hover:bg-slate-100/50 dark:hover:bg-slate-700/50 ${!notif.read ? 'bg-blue-500/5' : ''}`}>
                                                 <p className="text-slate-800 dark:text-white text-sm">{notif.message}</p>
                                                 <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">{notif.time}</p>

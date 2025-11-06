@@ -314,34 +314,55 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const confirmShareFile = (fileId: number, email: string) => {
+      const fileToShare = files.find(f => f.id === fileId);
+      if (!fileToShare) return;
+
+      const recipientUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
       setFiles(prevFiles => prevFiles.map(f => 
           f.id === fileId ? { ...f, shared: f.shared + 1 } : f
       ));
 
-      const sharedFile = files.find(f => f.id === fileId);
-      if (sharedFile) {
-          const newActivity: Activity = {
-              action: `File shared with ${email}`,
-              file: sharedFile.name,
-              user: 'You',
-              time: 'Just now',
-              type: 'share',
-          };
-          setActivities(prev => [newActivity, ...prev]);
+      const newActivity: Activity = {
+          action: `File shared with ${email}`,
+          file: fileToShare.name,
+          user: 'You',
+          time: 'Just now',
+          type: 'share',
+      };
+      setActivities(prev => [newActivity, ...prev]);
 
-          const newNotification: Notification = {
-              id: Date.now(),
-              message: `You shared "${sharedFile.name}" with ${email}.`,
+      const notificationsToAdd: Notification[] = [];
+      
+      // Notification for the person sharing
+      const sharerNotification: Notification = {
+          id: Date.now(),
+          message: `You shared "${fileToShare.name}" with ${email}.`,
+          time: 'Just now',
+          read: false,
+          recipient: user?.email,
+      };
+      notificationsToAdd.push(sharerNotification);
+
+      // Notification for the recipient, if they are a user on the platform
+      if (recipientUser) {
+          const recipientNotification: Notification = {
+              id: Date.now() + 1, // ensure unique key
+              message: `${user?.name} shared "${fileToShare.name}" with you.`,
               time: 'Just now',
               read: false,
+              recipient: recipientUser.email,
           };
-          setNotifications(prev => [newNotification, ...prev]);
+          notificationsToAdd.push(recipientNotification);
       }
-      setFileToShare(null);
+      
+      setNotifications(prev => [...notificationsToAdd, ...prev]);
   };
 
   const markNotificationsAsRead = () => {
-    setNotifications(prev => prev.map(n => ({...n, read: true})));
+    setNotifications(prev => prev.map(n => 
+        (!n.recipient || n.recipient === user?.email) ? { ...n, read: true } : n
+    ));
   }
 
   const performAISearch = (query: string) => {
