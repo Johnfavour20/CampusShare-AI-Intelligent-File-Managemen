@@ -331,9 +331,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
       // Create a new activity log entry
       const newActivity: Activity = {
-          action: `File shared with ${email}`,
+          action: `shared file with ${email}`,
           file: fileToUpdate.name,
-          user: 'You',
+          user: user?.name || 'A user',
           time: 'Just now',
           type: 'share',
       };
